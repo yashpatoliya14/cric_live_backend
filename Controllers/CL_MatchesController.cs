@@ -101,7 +101,7 @@ public class CL_MatchesController : ControllerBase
         using (SqlConnection conn = new SqlConnection(sqlDataSource))
         {
             conn.Open();
-            using (SqlCommand command = new SqlCommand("select * from CL_Matches where uid = @uid", conn))
+            using (SqlCommand command = new SqlCommand("select * from CL_Matches where uid = @uid and tournamentId is null and status!='scheduled'", conn))
             {
                 command.CommandType = CommandType.Text;
                 command.Parameters.AddWithValue("@uid", uid);

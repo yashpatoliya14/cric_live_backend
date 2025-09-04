@@ -176,22 +176,6 @@
   },
   {
     "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
-    "Method": "GetTeamPlayers",
-    "RelativePath": "api/CL_TeamPlayers/GetTeamPlayers",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "teamId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
     "Method": "GetTeamPlayersById",
     "RelativePath": "api/CL_TeamPlayers/GetTeamPlayersById/{teamId}",
     "HttpMethod": "GET",
@@ -201,27 +185,6 @@
       {
         "Name": "teamId",
         "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
-    "Method": "UpdateTeamPlayer",
-    "RelativePath": "api/CL_TeamPlayers/UpdateTeamPlayer/{teamPlayerId}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "teamPlayerId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "teamPlayer",
-        "Type": "CricLive.Models.TeamPlayer",
         "IsRequired": true
       }
     ],
@@ -261,8 +224,18 @@
   },
   {
     "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "GetTeams",
+    "RelativePath": "api/CL_Teams/GetTeams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
     "Method": "GetTeamById",
-    "RelativePath": "api/CL_Teams/GetTeamById/{teamId}",
+    "RelativePath": "api/CL_Teams/GetTeamsById/{teamId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -278,7 +251,7 @@
   {
     "ContainingType": "CricLive.Controllers.CL_TeamsController",
     "Method": "GetTeamByUid",
-    "RelativePath": "api/CL_Teams/GetTeamByUid/{uid}",
+    "RelativePath": "api/CL_Teams/GetTeamsByUid/{uid}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -289,16 +262,6 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CricLive.Controllers.CL_TeamsController",
-    "Method": "GetTeams",
-    "RelativePath": "api/CL_Teams/GetTeams",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   },
   {

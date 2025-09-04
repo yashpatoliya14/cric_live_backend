@@ -15,48 +15,6 @@ namespace CricLive.Controllers
             _configuration = configuration;
         }
 
-        // GET: api/CL_TeamPlayers/GetTeamPlayers?teamId=1
-        [HttpGet]
-        [Route("GetTeamPlayers")]
-        public IActionResult GetTeamPlayers(int teamId)
-        {
-            try
-            {
-                List<TeamPlayer> players = new List<TeamPlayer>();
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection con = new SqlConnection(sqlDataSource))
-                {
-                    con.Open();
-                    using (SqlCommand command = new SqlCommand("PR_CL_GetPlayersByTeamId", con))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@teamId", teamId);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                TeamPlayer player = new TeamPlayer
-                                {
-                                    teamPlayerId = Convert.ToInt32(reader["teamPlayerId"]),
-                                    teamId = Convert.ToInt32(reader["teamId"]),
-                                    playerId = Convert.ToInt32(reader["playerId"]),
-                                    playerName = reader["playerName"].ToString(),
-                                    uid = Convert.ToInt32(reader["playerId"]) // Assuming uid is the playerId
-                                };
-                                players.Add(player);
-                            }
-                        }
-                    }
-                }
-                return Ok(players);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-        }
-
-        // GET: api/CL_TeamPlayers/GetTeamPlayerById/5
         [HttpGet]
         [Route("GetTeamPlayersById/{teamId}")]
         public IActionResult GetTeamPlayersById(int teamId)
@@ -68,22 +26,27 @@ namespace CricLive.Controllers
                 using (SqlConnection con = new SqlConnection(sqlDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand("PR_CL_GetPlayersByTeamId", con))
+                    using (SqlCommand command = new SqlCommand(@"SELECT 
+        teamPlayerId,
+        teamId,
+        playerName
+    FROM 
+        CL_TeamPlayers 
+    WHERE 
+        teamId = @teamId;", con))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandType = CommandType.Text;
                         command.Parameters.AddWithValue("@teamId", teamId);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                TeamPlayer player = null;
+                                TeamPlayer player = null;
                                 player = new TeamPlayer
                                 {
-                                    teamPlayerId = Convert.ToInt32(reader["teamPlayerId"]),
-                                    teamId = Convert.ToInt32(reader["teamId"]),
-                                    playerId = Convert.ToInt32(reader["playerId"]),
-                                    playerName = reader["playerName"].ToString(),
-                                    uid = Convert.ToInt32(reader["playerId"])
+                                    TeamPlayerId = Convert.ToInt32(reader["teamPlayerId"]),
+                                    TeamId = Convert.ToInt32(reader["teamId"]),
+                                    PlayerName = reader["playerName"].ToString(),
                                 };
                                 players.Add(player);
                             }
@@ -112,14 +75,16 @@ namespace CricLive.Controllers
                 using (SqlConnection con = new SqlConnection(sqlDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand("PR_CL_CreateTeamPlayer", con))
+                    using (SqlCommand command = new SqlCommand(@"INSERT INTO CL_TeamPlayers (playerName,teamId)
+    VALUES (@playerName,@teamId)", con))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@teamId", teamPlayer.teamId);
-                        command.Parameters.AddWithValue("@uid", teamPlayer.uid); // uid is the player's main ID
+                        command.CommandType = CommandType.Text;
+                        command.Parameters.AddWithValue("@playerName", teamPlayer.PlayerName); // uid is the player's main ID
+                        command.Parameters.AddWithValue("@teamId", teamPlayer.TeamId); // uid is the player's main ID
 
                         var newId = command.ExecuteScalar();
                         return Ok(new { message = "Team player added successfully.", teamPlayerId = newId });
+
                     }
                 }
             }
@@ -129,34 +94,7 @@ namespace CricLive.Controllers
             }
         }
 
-        // PUT: api/CL_TeamPlayers/UpdateTeamPlayer/5
-        [HttpPut]
-        [Route("UpdateTeamPlayer/{teamPlayerId}")]
-        public IActionResult UpdateTeamPlayer(int teamPlayerId, [FromBody] TeamPlayer teamPlayer)
-        {
-            try
-            {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection con = new SqlConnection(sqlDataSource))
-                {
-                    con.Open();
-                    using (SqlCommand command = new SqlCommand("PR_CL_UpdateTeamPlayer", con))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@teamPlayerId", teamPlayerId);
-                        command.Parameters.AddWithValue("@teamId", teamPlayer.teamId);
-                        command.Parameters.AddWithValue("@uid", teamPlayer.uid);
-
-                        command.ExecuteNonQuery();
-                        return Ok(new { message = "Team player updated successfully." });
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-        }
+        
 
         // DELETE: api/CL_TeamPlayers/DeleteTeamPlayer/5
         [HttpDelete]
@@ -169,9 +107,10 @@ namespace CricLive.Controllers
                 using (SqlConnection con = new SqlConnection(sqlDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand("PR_CL_DeleteTeamPlayer", con))
+                    using (SqlCommand command = new SqlCommand(@"DELETE FROM CL_TeamPlayers
+    WHERE teamPlayerId = @teamPlayerId;", con))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandType = CommandType.Text;
                         command.Parameters.AddWithValue("@teamPlayerId", teamPlayerId);
                         int rowsAffected = command.ExecuteNonQuery();
 

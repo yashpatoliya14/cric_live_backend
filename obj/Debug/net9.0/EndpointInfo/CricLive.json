@@ -234,28 +234,6 @@
         }
       }
     },
-    "/api/CL_TeamPlayers/GetTeamPlayers": {
-      "get": {
-        "tags": [
-          "CL_TeamPlayers"
-        ],
-        "parameters": [
-          {
-            "name": "teamId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/CL_TeamPlayers/GetTeamPlayersById/{teamId}": {
       "get": {
         "tags": [
@@ -283,48 +261,6 @@
       "post": {
         "tags": [
           "CL_TeamPlayers"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TeamPlayer"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TeamPlayer"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TeamPlayer"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/CL_TeamPlayers/UpdateTeamPlayer/{teamPlayerId}": {
-      "put": {
-        "tags": [
-          "CL_TeamPlayers"
-        ],
-        "parameters": [
-          {
-            "name": "teamPlayerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "requestBody": {
           "content": {
@@ -387,14 +323,14 @@
         }
       }
     },
-    "/api/CL_Teams/GetTeamById/{teamId}": {
+    "/api/CL_Teams/GetTeamsByUid/{uid}": {
       "get": {
         "tags": [
           "CL_Teams"
         ],
         "parameters": [
           {
-            "name": "teamId",
+            "name": "uid",
             "in": "path",
             "required": true,
             "schema": {
@@ -410,14 +346,14 @@
         }
       }
     },
-    "/api/CL_Teams/GetTeamByUid/{uid}": {
+    "/api/CL_Teams/GetTeamsById/{teamId}": {
       "get": {
         "tags": [
           "CL_Teams"
         ],
         "parameters": [
           {
-            "name": "uid",
+            "name": "teamId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1277,17 +1213,8 @@
             "type": "integer",
             "format": "int32"
           },
-          "uid": {
-            "type": "integer",
-            "format": "int32"
-          },
           "playerName": {
             "type": "string",
-            "nullable": true
-          },
-          "playerId": {
-            "type": "integer",
-            "format": "int32",
             "nullable": true
           }
         },

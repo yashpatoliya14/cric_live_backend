@@ -71,7 +71,7 @@ namespace CricLive.Controllers
                             issuer: _configuration["JwtConfig:Issuer"],
                             audience: _configuration["JwtConfig:Audience"],
                             claims: claims,
-                            expires: DateTime.UtcNow.AddMinutes(30), // increase expiry
+                            expires: DateTime.UtcNow.AddDays(30), // increase expiry
                             signingCredentials: signIn
                         );
 
@@ -177,7 +177,7 @@ namespace CricLive.Controllers
                 {
                     DateTime otpTime = DateTime.Parse(reader["otpTime"].ToString());
                     int dbOtp = Convert.ToInt32(reader["otp"]);
-                    string uid = reader["uid"].ToString();   // ✅ store before closing
+                    string uid = reader["uid"].ToString();  
                     string emailFromDb = reader["email"].ToString();
 
                     reader.Close();
@@ -201,7 +201,7 @@ namespace CricLive.Controllers
                         {
             new Claim(JwtRegisteredClaimNames.Sub, _configuration["JwtConfig:Subject"]),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("uid", uid),                // ✅ use stored values
+            new Claim("uid", uid),               
             new Claim("email", emailFromDb)
         };
 
@@ -212,7 +212,7 @@ namespace CricLive.Controllers
                             issuer: _configuration["JwtConfig:Issuer"],
                             audience: _configuration["JwtConfig:Audience"],
                             claims: claims,
-                            expires: DateTime.UtcNow.AddMinutes(30),
+                            expires: DateTime.UtcNow.AddDays(30),
                             signingCredentials: signIn
                         );
 
