@@ -1,0 +1,92 @@
+[
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "GetTeamPlayers",
+    "RelativePath": "api/CL_TeamPlayers/GetTeamPlayers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "GetTeams",
+    "RelativePath": "api/CL_Teams/GetTeams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "CreateUser",
+    "RelativePath": "api/CL_Users/CreateUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "CricLive.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/CL_Users/DeleteUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "GetUsers",
+    "RelativePath": "api/CL_Users/GetUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/CL_Users/UpdateUser",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "CricLive.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

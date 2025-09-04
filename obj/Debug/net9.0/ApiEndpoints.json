@@ -1,0 +1,669 @@
+[
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "CreateMatch",
+    "RelativePath": "api/CL_Matches/CreateMatch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "matchDto",
+        "Type": "CricLive.Models.CreateMatchDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "DeleteMatch",
+    "RelativePath": "api/CL_Matches/DeleteMatch",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "GetLiveMatches",
+    "RelativePath": "api/CL_Matches/GetLiveMatch",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "GetMatchById",
+    "RelativePath": "api/CL_Matches/GetMatchById/{matchId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "matchId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "GetMatchesByTournamentId",
+    "RelativePath": "api/CL_Matches/GetMatchesByTournamentId/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "GetAllMatchesByUser",
+    "RelativePath": "api/CL_Matches/GetMatchesByUser/{uid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "GetMatchState",
+    "RelativePath": "api/CL_Matches/GetMatchState",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "matchId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "UpdateMatch",
+    "RelativePath": "api/CL_Matches/UpdateMatch/{matchId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "matchId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "matchDto",
+        "Type": "CricLive.Models.UpdateMatchDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "UpdateMatchState",
+    "RelativePath": "api/CL_Matches/UpdateMatchState",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "stateDto",
+        "Type": "CricLive.Models.UpdateMatchStateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "CreateTeamPlayer",
+    "RelativePath": "api/CL_TeamPlayers/CreateTeamPlayer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamPlayer",
+        "Type": "CricLive.Models.TeamPlayer",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "DeleteTeamPlayer",
+    "RelativePath": "api/CL_TeamPlayers/DeleteTeamPlayer/{teamPlayerId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamPlayerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "GetTeamPlayers",
+    "RelativePath": "api/CL_TeamPlayers/GetTeamPlayers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "GetTeamPlayersById",
+    "RelativePath": "api/CL_TeamPlayers/GetTeamPlayersById/{teamId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamPlayersController",
+    "Method": "UpdateTeamPlayer",
+    "RelativePath": "api/CL_TeamPlayers/UpdateTeamPlayer/{teamPlayerId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamPlayerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "teamPlayer",
+        "Type": "CricLive.Models.TeamPlayer",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "CreateTeam",
+    "RelativePath": "api/CL_Teams/CreateTeam",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "team",
+        "Type": "CricLive.Models.Team",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "DeleteTeam",
+    "RelativePath": "api/CL_Teams/DeleteTeam/{teamId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "GetTeamById",
+    "RelativePath": "api/CL_Teams/GetTeamById/{teamId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "GetTeamByUid",
+    "RelativePath": "api/CL_Teams/GetTeamByUid/{uid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "GetTeams",
+    "RelativePath": "api/CL_Teams/GetTeams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TeamsController",
+    "Method": "UpdateTeam",
+    "RelativePath": "api/CL_Teams/UpdateTeam/{teamId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "team",
+        "Type": "CricLive.Models.Team",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentsController",
+    "Method": "CreateTournament",
+    "RelativePath": "api/CL_Tournaments/CreateTournament",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tournamentDto",
+        "Type": "CricLive.Models.Tournament",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentsController",
+    "Method": "DeleteTournament",
+    "RelativePath": "api/CL_Tournaments/DeleteTournament/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentsController",
+    "Method": "GetTournamentById",
+    "RelativePath": "api/CL_Tournaments/GetTournamentById/{hostId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hostId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentsController",
+    "Method": "GetTournaments",
+    "RelativePath": "api/CL_Tournaments/GetTournaments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentsController",
+    "Method": "UpdateTournament",
+    "RelativePath": "api/CL_Tournaments/UpdateTournament/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "tournamentDto",
+        "Type": "CricLive.Models.Tournament",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentTeamsController",
+    "Method": "CreateTournamentTeam",
+    "RelativePath": "api/CL_TournamentTeams/CreateTournamentTeam",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tournamentTeamDto",
+        "Type": "CricLive.Models.TournamentTeam",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentTeamsController",
+    "Method": "DeleteTournamentTeam",
+    "RelativePath": "api/CL_TournamentTeams/DeleteTournamentTeam/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentTeamsController",
+    "Method": "GetTournamentTeamById",
+    "RelativePath": "api/CL_TournamentTeams/GetTournamentTeamById/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentTeamsController",
+    "Method": "GetTournamentTeams",
+    "RelativePath": "api/CL_TournamentTeams/GetTournamentTeams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_TournamentTeamsController",
+    "Method": "UpdateTournamentTeam",
+    "RelativePath": "api/CL_TournamentTeams/UpdateTournamentTeam/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "tournamentTeamDto",
+        "Type": "CricLive.Models.TournamentTeam",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "CreateUser",
+    "RelativePath": "api/CL_Users/CreateUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "CricLive.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "CreateUser",
+    "RelativePath": "api/CL_Users/CreateUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "CricLive.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/CL_Users/DeleteUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/CL_Users/ForgotPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "CricLive.Models.ForgotPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/CL_Users/GetAllUsers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "GetUser",
+    "RelativePath": "api/CL_Users/GetUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "GetUserByEmail",
+    "RelativePath": "api/CL_Users/GetUserByEmail/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "Login",
+    "RelativePath": "api/CL_Users/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "_request",
+        "Type": "CricLive.Models.Login.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "SearchUser",
+    "RelativePath": "api/CL_Users/SearchUser/{q}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "SendOtp",
+    "RelativePath": "api/CL_Users/SendOtp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/CL_Users/UpdateUser",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "CricLive.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CricLive.Controllers.CL_UsersController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/CL_Users/VerifyOtp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "otp",
+        "Type": "CricLive.Models.OtpModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
