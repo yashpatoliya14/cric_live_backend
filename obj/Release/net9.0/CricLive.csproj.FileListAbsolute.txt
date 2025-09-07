@@ -48,3 +48,4 @@ D:\SEM 5\CricLive\CricLive\obj\Release\net9.0\refint\CricLive.dll
 D:\SEM 5\CricLive\CricLive\obj\Release\net9.0\CricLive.pdb
 D:\SEM 5\CricLive\CricLive\obj\Release\net9.0\CricLive.genruntimeconfig.cache
 D:\SEM 5\CricLive\CricLive\obj\Release\net9.0\ref\CricLive.dll
+D:\SEM 5\CricLive\CricLive\obj\Release\net9.0\CricLive.sourcelink.json

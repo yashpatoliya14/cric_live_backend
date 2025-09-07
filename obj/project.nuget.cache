@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EttYCP0CFqQ=",
+  "dgSpecHash": "vhLebDdvw28=",
   "success": true,
-  "projectFilePath": "D:\\SEM 5\\CricLive\\CricLive\\CricLive.csproj",
+  "projectFilePath": "D:\\SEM 5\\cric_live_backend\\CricLive\\CricLive.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VICTUS\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.8\\microsoft.aspnetcore.authentication.jwtbearer.9.0.8.nupkg.sha512",
     "C:\\Users\\VICTUS\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

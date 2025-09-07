@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SEM 5\\CricLive\\CricLive\\CricLive.csproj": {}
+    "D:\\SEM 5\\cric_live_backend\\CricLive\\CricLive.csproj": {}
   },
   "projects": {
-    "D:\\SEM 5\\CricLive\\CricLive\\CricLive.csproj": {
+    "D:\\SEM 5\\cric_live_backend\\CricLive\\CricLive.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SEM 5\\CricLive\\CricLive\\CricLive.csproj",
+        "projectUniqueName": "D:\\SEM 5\\cric_live_backend\\CricLive\\CricLive.csproj",
         "projectName": "CricLive",
-        "projectPath": "D:\\SEM 5\\CricLive\\CricLive\\CricLive.csproj",
+        "projectPath": "D:\\SEM 5\\cric_live_backend\\CricLive\\CricLive.csproj",
         "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "D:\\SEM 5\\CricLive\\CricLive\\obj\\",
+        "outputPath": "D:\\SEM 5\\cric_live_backend\\CricLive\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

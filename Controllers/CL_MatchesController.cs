@@ -101,7 +101,7 @@ public class CL_MatchesController : ControllerBase
         using (SqlConnection conn = new SqlConnection(sqlDataSource))
         {
             conn.Open();
-            using (SqlCommand command = new SqlCommand("select * from CL_Matches where uid = @uid and tournamentId is null and status!='scheduled'", conn))
+            using (SqlCommand command = new SqlCommand("select * from CL_Matches where uid = @uid and tournamentId is null ", conn))
             {
                 command.CommandType = CommandType.Text;
                 command.Parameters.AddWithValue("@uid", uid);
@@ -119,11 +119,11 @@ public class CL_MatchesController : ControllerBase
                             MatchDate = Convert.ToDateTime(reader["matchDate"]),
                             Overs = Convert.ToInt32(reader["overs"]),
                             Status = reader["status"].ToString(),
-                            TossWon = Convert.ToInt32(reader["tossWon"]),
+                            TossWon = reader["tossWon"]!=DBNull.Value ? Convert.ToInt32(reader["tossWon"]) : null,
                             Decision = reader["decision"].ToString(),
                             TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
                             Uid = Convert.ToInt32(reader["uid"]),
-                            MatchState = reader["matchState"]?.ToString(),
+                            MatchState = reader["matchState"] != DBNull.Value ? reader["matchState"]?.ToString():null,
                             CurrentOvers = Convert.ToDecimal(reader["currentOvers"]),
                             StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                             NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
