@@ -1,19 +1,18 @@
 # Use the official .NET SDK image to build the app
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore dependencies
 COPY ["CricLive.sln", "."]
-COPY ["CricLive/CricLive.csproj", "CricLive/"]
-RUN dotnet restore "CricLive/CricLive.csproj"
+COPY ["CricLive.csproj", "."]
+RUN dotnet restore "CricLive.csproj"
 
 # Copy everything else and build the project
 COPY . .
-WORKDIR /src/CricLive
 RUN dotnet publish "CricLive.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Final runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 # Create a non-root user for security
 ARG APP_USER=app
