@@ -15,8 +15,8 @@ RUN dotnet publish "CricLive.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 # Create non-root user
+# The base image already has a non-root user named "app". We just need to switch to it.
 ARG APP_USER=app
-RUN useradd -m -u 5000 $APP_USER
 USER $APP_USER
 
 
