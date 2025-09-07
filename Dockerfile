@@ -1,28 +1,26 @@
-# Use the official .NET SDK image to build the app
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
 COPY ["CricLive.sln", "."]
-COPY ["CricLive.csproj", "."]
-RUN dotnet restore "CricLive.csproj"
+COPY ["CricLive/CricLive.csproj", "CricLive/"]
+RUN dotnet restore "CricLive/CricLive.csproj"
 
-# Copy everything else and build the project
 COPY . .
+WORKDIR /src/CricLive
 RUN dotnet publish "CricLive.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Final runtime image
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+WORKDIR /app
 
-# Create a non-root user for security
+# Create non-root user (Debian syntax)
 ARG APP_USER=app
-RUN adduser -u 5000 -D -s /bin/sh $APP_USER
+RUN useradd -m -u 5000 $APP_USER
 USER $APP_USER
 
-WORKDIR /app
 COPY --from=build /app/publish .
 
-# Set the listening port and expose it
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
 
