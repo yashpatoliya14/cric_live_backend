@@ -5,18 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.WebHost.ConfigureKestrel(
-    serverOption => {
-        serverOption.ListenAnyIP(5000);
-        serverOption.ListenAnyIP(5001, listenOptions =>
-        {
-            listenOptions.UseHttps();
-        });
-        serverOption.Limits.MaxRequestBodySize = null;
-
-
-
-        });
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
