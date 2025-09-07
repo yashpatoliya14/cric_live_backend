@@ -821,35 +821,6 @@
       }
     },
     "/api/CL_Users/CreateUser": {
-      "get": {
-        "tags": [
-          "CL_Users"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
       "post": {
         "tags": [
           "CL_Users"
@@ -933,7 +904,7 @@
         }
       }
     },
-    "/api/CL_Users/GetUser": {
+    "/api/CL_Users/GetUser/{uid}": {
       "get": {
         "tags": [
           "CL_Users"
@@ -941,7 +912,8 @@
         "parameters": [
           {
             "name": "uid",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -955,15 +927,16 @@
         }
       }
     },
-    "/api/CL_Users/DeleteUser": {
-      "get": {
+    "/api/CL_Users/DeleteUser/{uid}": {
+      "delete": {
         "tags": [
           "CL_Users"
         ],
         "parameters": [
           {
             "name": "uid",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"

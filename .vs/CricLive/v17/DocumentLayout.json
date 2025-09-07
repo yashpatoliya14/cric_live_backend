@@ -1,34 +1,38 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\SEM 5\\CricLive\\",
+  "WorkspaceRootPath": "D:\\SEM 5\\cric_live_backend\\CricLive\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\controllers\\cl_matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\controllers\\cl_matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\controllers\\cl_tournamentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\controllers\\cl_tournamentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_teamplayerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_teamplayerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\controllers\\cl_tournamentteamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\controllers\\cl_tournamentteamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_teamscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_teamscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|d:\\sem 5\\criclive\\criclive\\models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{88063362-39D3-411F-B838-4A41D5686F8F}|CricLive\\CricLive.csproj|solutionrelative:criclive\\models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_tournamentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_tournamentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|d:\\sem 5\\cric_live_backend\\criclive\\controllers\\cl_tournamentteamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D99091CF-7A38-06BA-E8C5-C99D6870726C}|CricLive.csproj|solutionrelative:controllers\\cl_tournamentteamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -43,90 +47,106 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Program.cs",
-              "RelativeDocumentMoniker": "CricLive\\Program.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Program.cs",
-              "RelativeToolTip": "CricLive\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T14:43:55.499Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-07T17:02:28.89Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\appsettings.json",
-              "RelativeDocumentMoniker": "CricLive\\appsettings.json",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\appsettings.json",
-              "RelativeToolTip": "CricLive\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-07T14:43:49.511Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Models\\User.cs",
-              "RelativeDocumentMoniker": "CricLive\\Models\\User.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Models\\User.cs",
-              "RelativeToolTip": "CricLive\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "CL_UsersController.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_UsersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_UsersController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_UsersController.cs",
+              "RelativeToolTip": "Controllers\\CL_UsersController.cs",
+              "ViewState": "AgIAAB8BAAAAAAAAAAAowDUBAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T14:43:42.698Z",
+              "WhenOpened": "2025-09-07T17:00:09.832Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "CL_MatchesController.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_MatchesController.cs",
-              "RelativeDocumentMoniker": "CricLive\\Controllers\\CL_MatchesController.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_MatchesController.cs",
-              "RelativeToolTip": "CricLive\\Controllers\\CL_MatchesController.cs",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAYwGcAAAB7AAAAAAAAAA==",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_MatchesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_MatchesController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_MatchesController.cs",
+              "RelativeToolTip": "Controllers\\CL_MatchesController.cs",
+              "ViewState": "AgIAAHwBAAAAAAAAAAAMwIsBAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T11:59:30.095Z",
+              "WhenOpened": "2025-09-07T16:55:15.192Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CL_TeamPlayersController.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TeamPlayersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_TeamPlayersController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TeamPlayersController.cs",
+              "RelativeToolTip": "Controllers\\CL_TeamPlayersController.cs",
+              "ViewState": "AgIAAGUAAAAAAAAAAAAcwIAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-07T16:54:53.7Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "CL_TournamentTeamController.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_TournamentTeamController.cs",
-              "RelativeDocumentMoniker": "CricLive\\Controllers\\CL_TournamentTeamController.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_TournamentTeamController.cs",
-              "RelativeToolTip": "CricLive\\Controllers\\CL_TournamentTeamController.cs",
-              "ViewState": "AgIAAKEBAAAAAAAAAAAUwLwBAAAZAAAAAAAAAA==",
+              "Title": "CL_TeamsController.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TeamsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_TeamsController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TeamsController.cs",
+              "RelativeToolTip": "Controllers\\CL_TeamsController.cs",
+              "ViewState": "AgIAAPIAAAAAAAAAAAAcwA0BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-31T13:31:40.863Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CL_TournamentsController.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_TournamentsController.cs",
-              "RelativeDocumentMoniker": "CricLive\\Controllers\\CL_TournamentsController.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Controllers\\CL_TournamentsController.cs",
-              "RelativeToolTip": "CricLive\\Controllers\\CL_TournamentsController.cs",
-              "ViewState": "AgIAAE8CAAAAAAAAAAAUwHsCAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T06:59:37.397Z"
+              "WhenOpened": "2025-09-07T16:53:15.929Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "Match.cs",
-              "DocumentMoniker": "D:\\SEM 5\\CricLive\\CricLive\\Models\\Match.cs",
-              "RelativeDocumentMoniker": "CricLive\\Models\\Match.cs",
-              "ToolTip": "D:\\SEM 5\\CricLive\\CricLive\\Models\\Match.cs",
-              "RelativeToolTip": "CricLive\\Models\\Match.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAswA0AAAATAAAAAAAAAA==",
+              "Title": "CL_TournamentsController.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TournamentsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_TournamentsController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TournamentsController.cs",
+              "RelativeToolTip": "Controllers\\CL_TournamentsController.cs",
+              "ViewState": "AgIAAGICAAAAAAAAAAAcwH0CAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T12:43:05.366Z"
+              "WhenOpened": "2025-09-07T16:52:22.979Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CL_TournamentTeamController.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TournamentTeamController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CL_TournamentTeamController.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TournamentTeamController.cs",
+              "RelativeToolTip": "Controllers\\CL_TournamentTeamController.cs",
+              "ViewState": "AgIAAK4BAAAAAAAAAAAcwMkBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-07T16:51:55.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\SEM 5\\cric_live_backend\\CricLive\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAA8AAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-07T15:48:07.869Z",
+              "EditorCaption": ""
             }
           ]
         }

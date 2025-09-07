@@ -296,11 +296,10 @@
 //}
 
 
-
 using CricLive.Models;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql; // Changed from System.Data.SqlClient
 using System.Data;
-using System.Data.SqlClient;
 
 namespace CricLive.Controllers
 {
@@ -325,9 +324,9 @@ namespace CricLive.Controllers
             try
             {
                 var tournamentDictionary = new Dictionary<int, Tournament>();
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
 
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = @"
@@ -344,9 +343,9 @@ namespace CricLive.Controllers
                         ORDER BY
                             t.tournamentId;";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -398,9 +397,9 @@ namespace CricLive.Controllers
             try
             {
                 var tournamentDictionary = new Dictionary<int, Tournament>();
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
 
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = @"
@@ -417,10 +416,10 @@ namespace CricLive.Controllers
                         WHERE 
                             t.hostId = @hostId;";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("@hostId", hostId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -469,21 +468,21 @@ namespace CricLive.Controllers
         [Route("CreateTournament")]
         public IActionResult CreateTournament([FromBody] Tournament tournamentDto)
         {
-            string sqlDataSource = _configuration.GetConnectionString("CricLive");
-            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            string pgDataSource = _configuration.GetConnectionString("CricLive");
+            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                SqlTransaction transaction = conn.BeginTransaction();
+                NpgsqlTransaction transaction = conn.BeginTransaction();
                 try
                 {
-                    // Step 1: Insert the tournament and get the new ID
+                    // Step 1: Insert the tournament and get the new ID using RETURNING
                     string tournamentQuery = @"
                         INSERT INTO CL_Tournaments (name, location, startDate, endDate, format, hostId)
-                        VALUES (@name, @location, @startDate, @endDate, @format, @hostId);
-                        SELECT SCOPE_IDENTITY();";
+                        VALUES (@name, @location, @startDate, @endDate, @format, @hostId)
+                        RETURNING tournamentId;";
 
                     int newTournamentId;
-                    using (SqlCommand command = new SqlCommand(tournamentQuery, conn, transaction))
+                    using (NpgsqlCommand command = new NpgsqlCommand(tournamentQuery, conn, transaction))
                     {
                         command.Parameters.AddWithValue("@name", tournamentDto.Name);
                         command.Parameters.AddWithValue("@location", tournamentDto.Location);
@@ -495,12 +494,12 @@ namespace CricLive.Controllers
                     }
 
                     // Step 2: Insert the associated scorers
-                    if (tournamentDto.Scorers != null && tournamentDto.Scorers.Count > 0)
+                    if (tournamentDto.Scorers != null && tournamentDto.Scorers.Any())
                     {
                         string scorerQuery = "INSERT INTO CL_TournamentScorers (tournamentId, uid) VALUES (@tournamentId, @scorerId);";
                         foreach (var scorer in tournamentDto.Scorers)
                         {
-                            using (SqlCommand scorerCmd = new SqlCommand(scorerQuery, conn, transaction))
+                            using (NpgsqlCommand scorerCmd = new NpgsqlCommand(scorerQuery, conn, transaction))
                             {
                                 scorerCmd.Parameters.AddWithValue("@tournamentId", newTournamentId);
                                 scorerCmd.Parameters.AddWithValue("@scorerId", scorer.ScorerId);
@@ -527,11 +526,11 @@ namespace CricLive.Controllers
         [Route("UpdateTournament/{id}")]
         public IActionResult UpdateTournament(int id, [FromBody] Tournament tournamentDto)
         {
-            string sqlDataSource = _configuration.GetConnectionString("CricLive");
-            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            string pgDataSource = _configuration.GetConnectionString("CricLive");
+            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                SqlTransaction transaction = conn.BeginTransaction();
+                NpgsqlTransaction transaction = conn.BeginTransaction();
                 try
                 {
                     // Step 1: Update the tournament details
@@ -540,7 +539,7 @@ namespace CricLive.Controllers
                         SET name = @name, location = @location, startDate = @startDate,
                             endDate = @endDate, format = @format
                         WHERE tournamentId = @tournamentId;";
-                    using (SqlCommand command = new SqlCommand(tournamentQuery, conn, transaction))
+                    using (NpgsqlCommand command = new NpgsqlCommand(tournamentQuery, conn, transaction))
                     {
                         command.Parameters.AddWithValue("@tournamentId", id);
                         command.Parameters.AddWithValue("@name", tournamentDto.Name);
@@ -553,19 +552,19 @@ namespace CricLive.Controllers
 
                     // Step 2: Delete existing scorers for this tournament
                     string deleteScorersQuery = "DELETE FROM CL_TournamentScorers WHERE tournamentId = @tournamentId;";
-                    using (SqlCommand deleteCmd = new SqlCommand(deleteScorersQuery, conn, transaction))
+                    using (NpgsqlCommand deleteCmd = new NpgsqlCommand(deleteScorersQuery, conn, transaction))
                     {
                         deleteCmd.Parameters.AddWithValue("@tournamentId", id);
                         deleteCmd.ExecuteNonQuery();
                     }
 
                     // Step 3: Insert the new list of associated scorers
-                    if (tournamentDto.Scorers != null && tournamentDto.Scorers.Count > 0)
+                    if (tournamentDto.Scorers != null && tournamentDto.Scorers.Any())
                     {
                         string insertScorerQuery = "INSERT INTO CL_TournamentScorers (tournamentId, uid) VALUES (@tournamentId, @scorerId);";
                         foreach (var scorer in tournamentDto.Scorers)
                         {
-                            using (SqlCommand insertCmd = new SqlCommand(insertScorerQuery, conn, transaction))
+                            using (NpgsqlCommand insertCmd = new NpgsqlCommand(insertScorerQuery, conn, transaction))
                             {
                                 insertCmd.Parameters.AddWithValue("@tournamentId", id);
                                 insertCmd.Parameters.AddWithValue("@scorerId", scorer.ScorerId);
@@ -592,16 +591,19 @@ namespace CricLive.Controllers
         [Route("DeleteTournament/{id}")]
         public IActionResult DeleteTournament(int id)
         {
-            string sqlDataSource = _configuration.GetConnectionString("CricLive");
-            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            string pgDataSource = _configuration.GetConnectionString("CricLive");
+            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                SqlTransaction transaction = conn.BeginTransaction();
+                NpgsqlTransaction transaction = conn.BeginTransaction();
                 try
                 {
-                    // Step 1: Delete associated scorers first to maintain referential integrity
+                    // Foreign key constraints might require deleting from child tables first.
+                    // This is handled by the application logic here.
+
+                    // Step 1: Delete associated scorers
                     string deleteScorersQuery = "DELETE FROM CL_TournamentScorers WHERE tournamentId = @tournamentId;";
-                    using (SqlCommand deleteScorersCmd = new SqlCommand(deleteScorersQuery, conn, transaction))
+                    using (NpgsqlCommand deleteScorersCmd = new NpgsqlCommand(deleteScorersQuery, conn, transaction))
                     {
                         deleteScorersCmd.Parameters.AddWithValue("@tournamentId", id);
                         deleteScorersCmd.ExecuteNonQuery();
@@ -610,7 +612,7 @@ namespace CricLive.Controllers
                     // Step 2: Delete the tournament itself
                     string deleteTournamentQuery = "DELETE FROM CL_Tournaments WHERE tournamentId = @tournamentId;";
                     int rowsAffected;
-                    using (SqlCommand command = new SqlCommand(deleteTournamentQuery, conn, transaction))
+                    using (NpgsqlCommand command = new NpgsqlCommand(deleteTournamentQuery, conn, transaction))
                     {
                         command.Parameters.AddWithValue("@tournamentId", id);
                         rowsAffected = command.ExecuteNonQuery();

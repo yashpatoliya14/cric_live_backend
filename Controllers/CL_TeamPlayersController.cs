@@ -1,7 +1,7 @@
 ﻿using CricLive.Models;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql; // Changed from System.Data.SqlClient
 using System.Data;
-using System.Data.SqlClient;
 
 namespace CricLive.Controllers
 {
@@ -22,27 +22,26 @@ namespace CricLive.Controllers
             try
             {
                 List<TeamPlayer> players = new List<TeamPlayer>();
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection con = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection con = new NpgsqlConnection(pgDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand(@"SELECT 
-        teamPlayerId,
-        teamId,
-        playerName
-    FROM 
-        CL_TeamPlayers 
-    WHERE 
-        teamId = @teamId;", con))
+                    using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT 
+                            teamPlayerId,
+                            teamId,
+                            playerName
+                        FROM 
+                            CL_TeamPlayers 
+                        WHERE 
+                            teamId = @teamId;", con))
                     {
                         command.CommandType = CommandType.Text;
                         command.Parameters.AddWithValue("@teamId", teamId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                TeamPlayer player = null;
-                                player = new TeamPlayer
+                                TeamPlayer player = new TeamPlayer
                                 {
                                     TeamPlayerId = Convert.ToInt32(reader["teamPlayerId"]),
                                     TeamId = Convert.ToInt32(reader["teamId"]),
@@ -53,9 +52,11 @@ namespace CricLive.Controllers
                         }
                     }
                 }
-                return Ok(new { 
-                    Message="Succes to fetch",
-                    Data= players});
+                return Ok(new
+                {
+                    Message = "Success to fetch players",
+                    Data = players
+                });
             }
             catch (Exception e)
             {
@@ -66,35 +67,32 @@ namespace CricLive.Controllers
         // POST: api/CL_TeamPlayers/CreateTeamPlayer
         [HttpPost]
         [Route("CreateTeamPlayer")]
-
         public IActionResult CreateTeamPlayer([FromBody] TeamPlayer teamPlayer)
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection con = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection con = new NpgsqlConnection(pgDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand(@"INSERT INTO CL_TeamPlayers (playerName,teamId)
-    VALUES (@playerName,@teamId)", con))
+                    // Use the RETURNING clause for PostgreSQL to get the new ID
+                    using (NpgsqlCommand command = new NpgsqlCommand(@"INSERT INTO CL_TeamPlayers (playerName, teamId)
+                        VALUES (@playerName, @teamId) RETURNING teamPlayerId;", con))
                     {
                         command.CommandType = CommandType.Text;
-                        command.Parameters.AddWithValue("@playerName", teamPlayer.PlayerName); // uid is the player's main ID
-                        command.Parameters.AddWithValue("@teamId", teamPlayer.TeamId); // uid is the player's main ID
+                        command.Parameters.AddWithValue("@playerName", teamPlayer.PlayerName);
+                        command.Parameters.AddWithValue("@teamId", teamPlayer.TeamId);
 
                         var newId = command.ExecuteScalar();
                         return Ok(new { message = "Team player added successfully.", teamPlayerId = newId });
-
                     }
                 }
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return BadRequest(new { message = e.Message, innerException = e.InnerException?.Message });
             }
         }
-
-        
 
         // DELETE: api/CL_TeamPlayers/DeleteTeamPlayer/5
         [HttpDelete]
@@ -103,12 +101,12 @@ namespace CricLive.Controllers
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection con = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection con = new NpgsqlConnection(pgDataSource))
                 {
                     con.Open();
-                    using (SqlCommand command = new SqlCommand(@"DELETE FROM CL_TeamPlayers
-    WHERE teamPlayerId = @teamPlayerId;", con))
+                    using (NpgsqlCommand command = new NpgsqlCommand(@"DELETE FROM CL_TeamPlayers
+                        WHERE teamPlayerId = @teamPlayerId;", con))
                     {
                         command.CommandType = CommandType.Text;
                         command.Parameters.AddWithValue("@teamPlayerId", teamPlayerId);

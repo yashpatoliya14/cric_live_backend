@@ -210,12 +210,10 @@
 //}
 
 
-
-
 using CricLive.Models;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql; // Changed from System.Data.SqlClient
 using System.Data;
-using System.Data.SqlClient;
 
 namespace CricLive.Controllers
 {
@@ -240,9 +238,9 @@ namespace CricLive.Controllers
             try
             {
                 List<TournamentTeam> tournamentTeams = new List<TournamentTeam>();
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
 
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = @"
@@ -257,9 +255,9 @@ namespace CricLive.Controllers
                         JOIN 
                             CL_Teams t ON tt.teamId = t.teamId";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -296,9 +294,9 @@ namespace CricLive.Controllers
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
                 List<TournamentTeam> teams = new List<TournamentTeam>();
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = @"
@@ -313,13 +311,13 @@ namespace CricLive.Controllers
                         JOIN 
                             CL_Teams t ON tt.teamId = t.teamId
                         WHERE 
-                            tt.tournamentTeamId = @tournamentTeamId"; // Corrected logic to filter by the primary key
+                            tt.tournamentTeamId = @tournamentTeamId";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("@tournamentTeamId", id);
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -358,16 +356,17 @@ namespace CricLive.Controllers
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
+                    // Use RETURNING clause for PostgreSQL instead of SCOPE_IDENTITY()
                     string query = @"
                         INSERT INTO CL_TournamentTeams (tournamentId, teamId)
-                        VALUES (@tournamentId, @teamId);
-                        SELECT SCOPE_IDENTITY();";
+                        VALUES (@tournamentId, @teamId)
+                        RETURNING tournamentTeamId;";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("@tournamentId", tournamentTeamDto.TournamentId);
                         command.Parameters.AddWithValue("@teamId", tournamentTeamDto.TeamId);
@@ -392,8 +391,8 @@ namespace CricLive.Controllers
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = @"
@@ -404,7 +403,7 @@ namespace CricLive.Controllers
                         WHERE
                             tournamentTeamId = @tournamentTeamId;";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("@tournamentTeamId", id);
                         command.Parameters.AddWithValue("@tournamentId", tournamentTeamDto.TournamentId);
@@ -430,12 +429,12 @@ namespace CricLive.Controllers
         {
             try
             {
-                string sqlDataSource = _configuration.GetConnectionString("CricLive");
-                using (SqlConnection conn = new SqlConnection(sqlDataSource))
+                string pgDataSource = _configuration.GetConnectionString("CricLive");
+                using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
                 {
                     conn.Open();
                     string query = "DELETE FROM CL_TournamentTeams WHERE tournamentTeamId = @tournamentTeamId;";
-                    using (SqlCommand command = new SqlCommand(query, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("@tournamentTeamId", id);
 

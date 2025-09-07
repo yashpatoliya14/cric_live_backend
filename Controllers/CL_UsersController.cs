@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.Data.SqlClient;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+using Npgsql; // Changed from System.Data.SqlClient
 
 namespace CricLive.Controllers
 {
@@ -20,11 +19,10 @@ namespace CricLive.Controllers
     {
         public IConfiguration _configuration;
 
-        public CL_UsersController(IConfiguration configuration )
+        public CL_UsersController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
 
         [HttpPost]
         [Route("Login")]
@@ -39,65 +37,72 @@ namespace CricLive.Controllers
                 {
                     return BadRequest(new { Message = "Email and Password are required" });
                 }
-                SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-                conn.Open();
-                SqlCommand command = conn.CreateCommand();
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = @"SELECT uid, email, password
-                                        FROM CL_Users
-                                        WHERE email = @email";
-                command.Parameters.AddWithValue("@email", _request.email);
-                SqlDataReader reader = command.ExecuteReader();
 
-                if (reader.Read())
+                using (NpgsqlConnection conn = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
-                    string hashedPasswordFromDb = reader["password"].ToString();
-                    var hasher = new PasswordHasher<string>();
-                    var result = hasher.VerifyHashedPassword(null, hashedPasswordFromDb, _request.password);
-                    if (result == PasswordVerificationResult.Success)
+                    conn.Open();
+                    NpgsqlCommand command = new NpgsqlCommand();
+                    command.Connection = conn;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"SELECT uid, email, password
+                                            FROM CL_Users
+                                            WHERE email = @email";
+                    command.Parameters.AddWithValue("@email", _request.email);
+
+                    // Corrected the type from 'Np' to 'NpgsqlDataReader'
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        var claims = new[]
+                        if (reader.Read())
                         {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["JwtConfig:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("uid", reader["uid"].ToString()),
-                new Claim("email", reader["email"].ToString())
-            };
+                            string hashedPasswordFromDb = reader["password"].ToString();
+                            var hasher = new PasswordHasher<string>();
+                            var result = hasher.VerifyHashedPassword(null, hashedPasswordFromDb, _request.password);
 
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Key"]));
-                        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                            if (result == PasswordVerificationResult.Success)
+                            {
+                                var claims = new[]
+                                {
+                                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["JwtConfig:Subject"]),
+                                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                    new Claim("uid", reader["uid"].ToString()),
+                                    new Claim("email", reader["email"].ToString())
+                                };
 
-                        var token = new JwtSecurityToken(
-                            issuer: _configuration["JwtConfig:Issuer"],
-                            audience: _configuration["JwtConfig:Audience"],
-                            claims: claims,
-                            expires: DateTime.UtcNow.AddDays(30), // increase expiry
-                            signingCredentials: signIn
-                        );
+                                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Key"]));
+                                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                        return Ok(new
+                                var token = new JwtSecurityToken(
+                                    issuer: _configuration["JwtConfig:Issuer"],
+                                    audience: _configuration["JwtConfig:Audience"],
+                                    claims: claims,
+                                    expires: DateTime.UtcNow.AddDays(30),
+                                    signingCredentials: signIn
+                                );
+
+                                return Ok(new
+                                {
+                                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                                    Message = "Welcome back !"
+                                });
+                            }
+                            else
+                            {
+                                return BadRequest(new { Message = "Invalid password" });
+                            }
+                        }
+                        else
                         {
-                            Token = new JwtSecurityTokenHandler().WriteToken(token),
-                            Message = "Welcome back !"
-                        });
-                    }
-                    else
-                    {
-                        return BadRequest(new { Message = "Invalid password" });
+                            return BadRequest(new { Message = "User not found" });
+                        }
                     }
                 }
-                else
-                {
-                    return BadRequest(new { Message = "User not found" });
-                }
-
             }
             catch (Exception e)
             {
                 return BadRequest(new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
@@ -120,20 +125,22 @@ namespace CricLive.Controllers
                 message.Body = $"<html><body> <h1>Welcome To CricLive</h1><h2>Your Otp is {otp}</h2> </body></html>";
                 message.IsBodyHtml = true;
 
-                SqlConnection conn =new SqlConnection(_configuration.GetConnectionString("CricLive"));
-                conn.Open();
-                SqlCommand command = conn.CreateCommand();
-                DateTime datetime = DateTime.Now;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = @"update CL_Users
-	                                    set otp = @otp,
-	                                    otpTime = @time
-	                                    where email = @email";
-                command.Parameters.AddWithValue("@otp", otp);
-                command.Parameters.AddWithValue("@email", email);
-                command.Parameters.AddWithValue("@time", datetime);
-                command.ExecuteNonQuery();
-                conn.Close();
+                using (NpgsqlConnection conn = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
+                {
+                    conn.Open();
+                    NpgsqlCommand command = conn.CreateCommand();
+                    DateTime datetime = DateTime.Now;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"update CL_Users
+                                            set otp = @otp,
+                                            otpTime = @time
+                                            where email = @email";
+                    command.Parameters.AddWithValue("@otp", otp);
+                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@time", datetime);
+                    command.ExecuteNonQuery();
+                }
+
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
@@ -147,10 +154,10 @@ namespace CricLive.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500,new
+                return StatusCode(500, new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
@@ -159,94 +166,87 @@ namespace CricLive.Controllers
         [Route("VerifyOtp")]
         public IActionResult VerifyOtp([FromBody] OtpModel otp)
         {
-                SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-            try
+            using (NpgsqlConnection conn = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
             {
-                conn.Open();
-                SqlCommand command = conn.CreateCommand();
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = @"select *
-	                                    from CL_Users
-	                                    where email = @email";
-
-                command.Parameters.AddWithValue("@email", otp.email);
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                try
                 {
-                    DateTime otpTime = DateTime.Parse(reader["otpTime"].ToString());
-                    int dbOtp = Convert.ToInt32(reader["otp"]);
-                    string uid = reader["uid"].ToString();  
-                    string emailFromDb = reader["email"].ToString();
+                    conn.Open();
+                    NpgsqlCommand command = conn.CreateCommand();
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"select * from CL_Users where email = @email";
+                    command.Parameters.AddWithValue("@email", otp.email);
 
-                    reader.Close();
-
-                    if ((DateTime.Now - otpTime).TotalMinutes > 10)
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        return BadRequest(new { Message = "OTP has expired. Please request a new one." });
-                    }
-
-                    if (dbOtp == otp.otp)
-                    {
-                        SqlCommand verifyCommand = conn.CreateCommand();
-                        verifyCommand.CommandType = System.Data.CommandType.Text;
-                        verifyCommand.CommandText = @"update CL_Users
-                                      set isVerified = 1
-                                      where email = @email";
-                        verifyCommand.Parameters.AddWithValue("@email", otp.email);
-                        verifyCommand.ExecuteNonQuery();
-
-                        var claims = new[]
+                        if (reader.Read())
                         {
-            new Claim(JwtRegisteredClaimNames.Sub, _configuration["JwtConfig:Subject"]),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("uid", uid),               
-            new Claim("email", emailFromDb)
-        };
+                            DateTime otpTime = DateTime.Parse(reader["otpTime"].ToString());
+                            int dbOtp = Convert.ToInt32(reader["otp"]);
+                            string uid = reader["uid"].ToString();
+                            string emailFromDb = reader["email"].ToString();
 
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Key"]));
-                        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                            reader.Close(); // Close reader before executing another command
 
-                        var token = new JwtSecurityToken(
-                            issuer: _configuration["JwtConfig:Issuer"],
-                            audience: _configuration["JwtConfig:Audience"],
-                            claims: claims,
-                            expires: DateTime.UtcNow.AddDays(30),
-                            signingCredentials: signIn
-                        );
+                            if ((DateTime.Now - otpTime).TotalMinutes > 10)
+                            {
+                                return BadRequest(new { Message = "OTP has expired. Please request a new one." });
+                            }
 
-                        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                            if (dbOtp == otp.otp)
+                            {
+                                using (NpgsqlCommand verifyCommand = conn.CreateCommand())
+                                {
+                                    verifyCommand.CommandType = System.Data.CommandType.Text;
+                                    verifyCommand.CommandText = @"update CL_Users
+                                                                  set isVerified = 1
+                                                                  where email = @email";
+                                    verifyCommand.Parameters.AddWithValue("@email", otp.email);
+                                    verifyCommand.ExecuteNonQuery();
+                                }
 
-                        return Ok(new { Message = "Email Verification Success", Token = tokenString });
+                                var claims = new[]
+                                {
+                                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["JwtConfig:Subject"]),
+                                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                    new Claim("uid", uid),
+                                    new Claim("email", emailFromDb)
+                                };
+
+                                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Key"]));
+                                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                                var token = new JwtSecurityToken(
+                                    issuer: _configuration["JwtConfig:Issuer"],
+                                    audience: _configuration["JwtConfig:Audience"],
+                                    claims: claims,
+                                    expires: DateTime.UtcNow.AddDays(30),
+                                    signingCredentials: signIn
+                                );
+
+                                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                                return Ok(new { Message = "Email Verification Success", Token = tokenString });
+                            }
+                            else
+                            {
+                                return BadRequest(new { Message = "Invalid OTP! Email Verification Failed." });
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest(new { Message = "Invalid Email Address." });
+                        }
                     }
-                    else
+                }
+                catch (Exception e)
+                {
+                    return StatusCode(500, new
                     {
-                        return BadRequest(new { Message = "Invalid OTP! Email Verification Failed." });
-                    }
+                        Message = e.Message,
+                        innerException = e.InnerException?.Message
+                    });
                 }
-
-                else
-                {
-                    reader.Close();
-                    return BadRequest(new { Message = "Invalid Email Address." });
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500,new
-                {
-                    Message = e.Message,
-                    innerException = e.InnerException?.Message 
-                });
-            }
-            finally
-            {
-                conn.Close();
             }
         }
-
-        [HttpGet]
 
         [HttpPost]
         [Route("CreateUser")]
@@ -254,17 +254,17 @@ namespace CricLive.Controllers
         {
             try
             {
-                using (SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive")))
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
                     _con.Open();
 
-                    using (SqlCommand commandForCheckUser = _con.CreateCommand())
+                    using (NpgsqlCommand commandForCheckUser = _con.CreateCommand())
                     {
                         commandForCheckUser.CommandType = System.Data.CommandType.Text;
-                        commandForCheckUser.CommandText = @"SELECT uid, email, password FROM CL_Users  WHERE email = @email";
+                        commandForCheckUser.CommandText = @"SELECT uid FROM CL_Users WHERE email = @email";
                         commandForCheckUser.Parameters.AddWithValue("@email", user.Email);
 
-                        using (SqlDataReader reader = commandForCheckUser.ExecuteReader())
+                        using (NpgsqlDataReader reader = commandForCheckUser.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -277,19 +277,21 @@ namespace CricLive.Controllers
                     user.Password = hasher.HashPassword(null, user.Password);
                     string username = user.Email.Split('@')[0];
 
-                    using (SqlCommand command = _con.CreateCommand())
+                    using (NpgsqlCommand command = _con.CreateCommand())
                     {
                         command.CommandType = System.Data.CommandType.Text;
-                        command.CommandText = @"Insert into CL_Users (fullName,gender,email, isVerified,profilePhoto,role,username,password) values
-	                                            (@firstName + ' ' + @lastName,@gender,@email,@isVerified,@profilePhoto,@role,@username,@password)";
-                        command.Parameters.AddWithValue("@firstName", user.FirstName);
-                        command.Parameters.AddWithValue("@lastName", user.LastName);
-                        command.Parameters.AddWithValue("@username", username);
-                        command.Parameters.AddWithValue("@email", user.Email);
-                        command.Parameters.AddWithValue("@profilePhoto", user.ProfilePhoto ?? " ");
+                        // Added 'RETURNING uid' to get the ID of the new row
+                        command.CommandText = @"INSERT INTO CL_Users (fullName, gender, email, isVerified, profilePhoto, role, username, password) 
+                                                VALUES (@fullName, @gender, @email, @isVerified, @profilePhoto, @role, @username, @password)
+                                                RETURNING uid";
+
+                        command.Parameters.AddWithValue("@fullName", $"{user.FirstName} {user.LastName}");
                         command.Parameters.AddWithValue("@gender", user.Gender);
+                        command.Parameters.AddWithValue("@email", user.Email);
                         command.Parameters.AddWithValue("@isVerified", 0);
+                        command.Parameters.AddWithValue("@profilePhoto", user.ProfilePhoto ?? " ");
                         command.Parameters.AddWithValue("@role", "user");
+                        command.Parameters.AddWithValue("@username", username);
                         command.Parameters.AddWithValue("@password", user.Password);
 
                         var newUserId = command.ExecuteScalar();
@@ -297,15 +299,15 @@ namespace CricLive.Controllers
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (NpgsqlException ex)
             {
                 Console.WriteLine($"A database error occurred: {ex.Message}");
-                return StatusCode(500, new { Message = "An error occurred while communicating with the database." });
+                return StatusCode(500, new { Message = ex.Message });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-                return StatusCode(500, new { Message = "An unexpected error occurred." });
+                return StatusCode(500, new { Message = ex.Message ,InnerException=ex.InnerException});
             }
         }
 
@@ -317,56 +319,48 @@ namespace CricLive.Controllers
             {
                 string password = body.Password;
                 string email = body.Email;
-                if (password == null || email == null)
+                if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email))
                 {
-                    return BadRequest(new
-                    {
-                        Message = "Credentials are missing"
-                    });
+                    return BadRequest(new { Message = "Credentials are missing" });
                 }
-                    using (SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive")))
-                    {
-                        _con.Open();
 
-                        using (SqlCommand command = _con.CreateCommand())
-                        {
-                            command.CommandType = System.Data.CommandType.Text;
-                            command.CommandText = @"select * from CL_Users where email = @email";
-                            command.Parameters.AddWithValue("@email", email);
-                            SqlDataReader reader =  command.ExecuteReader();
-                            if (!reader.HasRows)
-                            {
-                                return NotFound(new { Message = "User Not Found" });
-                            }
-                        }
-                    }
-                
-
-
-                var hasher = new PasswordHasher<string>();
-                password = hasher.HashPassword(null, password);
-                using (SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive")))
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
                     _con.Open();
-                    using(SqlCommand command = _con.CreateCommand())
+
+                    using (NpgsqlCommand checkCommand = _con.CreateCommand())
                     {
-                        command.CommandType = System.Data.CommandType.Text;
-                        command.CommandText = @"update CL_Users set password = @password where email = @email";
-                        command.Parameters.AddWithValue("@email",email);
-                        command.Parameters.AddWithValue("@password",password);
-                        command.ExecuteNonQuery();
+                        checkCommand.CommandType = System.Data.CommandType.Text;
+                        checkCommand.CommandText = @"select 1 from CL_Users where email = @email";
+                        checkCommand.Parameters.AddWithValue("@email", email);
+                        var userExists = checkCommand.ExecuteScalar();
+                        if (userExists == null)
+                        {
+                            return NotFound(new { Message = "User Not Found" });
+                        }
+                    }
+
+                    var hasher = new PasswordHasher<string>();
+                    password = hasher.HashPassword(null, password);
+
+                    using (NpgsqlCommand updateCommand = _con.CreateCommand())
+                    {
+                        updateCommand.CommandType = System.Data.CommandType.Text;
+                        updateCommand.CommandText = @"update CL_Users set password = @password where email = @email";
+                        updateCommand.Parameters.AddWithValue("@email", email);
+                        updateCommand.Parameters.AddWithValue("@password", password);
+                        updateCommand.ExecuteNonQuery();
 
                         return Ok(new { Message = "Password Change Successful" });
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(500, new
                 {
                     Message = e.Message,
-                    InnerException = e.InnerException
-                    
+                    InnerException = e.InnerException?.Message
                 });
             }
         }
@@ -377,122 +371,142 @@ namespace CricLive.Controllers
         {
             try
             {
-
-                SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-                _con.Open();
-                SqlCommand command = _con.CreateCommand();
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = @"select * from CL_Users where email = @email";
-                command.Parameters.AddWithValue("@email", email);
-                SqlDataReader reader = command.ExecuteReader();
-
-                User user = new User();
-                if (reader.Read())
+                User user = null;
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
-                    user.FirstName = reader["fullName"].ToString().Split(" ")[0];
-                    //user.LastName = reader["fullName"].ToString().Split(" ")[1];
-                    user.Role = reader["role"].ToString();
-                    user.IsVerified = Convert.ToInt32(reader["isVerified"]);
-                    user.ProfilePhoto = reader["profilePhoto"].ToString();
-                    user.Username = reader["username"].ToString();
-                    user.Email = reader["email"].ToString();
-                    user.Gender = reader["gender"].ToString();
-                    user.Password = reader["password"].ToString();
+                    _con.Open();
+                    NpgsqlCommand command = _con.CreateCommand();
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"select * from CL_Users where email = @email";
+                    command.Parameters.AddWithValue("@email", email);
+
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            user = new User
+                            {
+                                Uid = Convert.ToInt32(reader["uid"]),
+                                FirstName = reader["fullName"].ToString().Split(' ')[0],
+                                LastName = reader["fullName"].ToString().Split(' ').Length > 1 ? reader["fullName"].ToString().Split(' ')[1] : "",
+                                Role = reader["role"].ToString(),
+                                IsVerified = Convert.ToInt32(reader["isVerified"]),
+                                ProfilePhoto = reader["profilePhoto"].ToString(),
+                                Username = reader["username"].ToString(),
+                                Email = reader["email"].ToString(),
+                                Gender = reader["gender"].ToString(),
+                                Password = "" // Never send the hash back
+                            };
+                        }
+                    }
+                }
+
+                if (user != null)
+                {
+                    return Ok(new { Message = "User found successfully", User = user });
                 }
                 else
                 {
-                    return NotFound(new
-                    {
-                        Message = "User not found",
-                    });
+                    return NotFound(new { Message = "User not found" });
                 }
-                _con.Close();
-                return Ok(new { Message = "User created successfully", User = user });
             }
             catch (Exception e)
             {
                 return BadRequest(new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
 
         [HttpGet]
         [Authorize]
-        [Route("GetUser")]
+        [Route("GetUser/{uid}")]
         public IActionResult GetUser(int uid)
         {
             try
             {
+                User user = null;
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
+                {
+                    _con.Open();
+                    NpgsqlCommand command = _con.CreateCommand();
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"select * from CL_Users where uid = @uid";
+                    command.Parameters.AddWithValue("@uid", uid);
 
-            SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-            _con.Open();
-            SqlCommand command = _con.CreateCommand();
-            command.CommandType = System.Data.CommandType.Text;
-            command.CommandText = @"select * from CL_Users where uid = @uid";
-            command.Parameters.AddWithValue("@uid", uid);
-            SqlDataReader reader =  command.ExecuteReader();
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            user = new User
+                            {
+                                Uid = Convert.ToInt32(reader["uid"]),
+                                FirstName = reader["fullName"].ToString().Split(' ')[0],
+                                LastName = reader["fullName"].ToString().Split(' ').Length > 1 ? reader["fullName"].ToString().Split(' ')[1] : "",
+                                Role = reader["role"].ToString(),
+                                IsVerified = Convert.ToInt32(reader["isVerified"]),
+                                ProfilePhoto = reader["profilePhoto"].ToString(),
+                                Username = reader["username"].ToString(),
+                                Email = reader["email"].ToString(),
+                                Gender = reader["gender"].ToString(),
+                                Password = "" // Never send the hash back
+                            };
+                        }
+                    }
+                }
 
-                User user = new User();
-            if (reader.Read())
-            {
-                user.FirstName = reader["fullName"].ToString().Split(" ")[0];
-                //user.LastName = reader["fullName"].ToString().Split(" ")[1];
-                    user.Role = reader["role"].ToString();
-                user.IsVerified = Convert.ToInt32(reader["isVerified"]);
-                user.ProfilePhoto = reader["profilePhoto"].ToString();
-                user.Username = reader["username"].ToString();
-                user.Email = reader["email"].ToString();
-                user.Gender = reader["gender"].ToString();
-                user.Password = reader["password"].ToString();
+                if (user != null)
+                {
+                    return Ok(new { Message = "User found successfully", User = user });
                 }
                 else
                 {
-                    return NotFound(new
-                    {
-                        Message = "User not found",
-                    });
+                    return NotFound(new { Message = "User not found" });
                 }
-                    _con.Close();
-            return Ok(new { Message = "User created successfully", User = user});
             }
             catch (Exception e)
             {
                 return BadRequest(new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
 
-        [HttpGet]
-        [Route("DeleteUser")]
+        [HttpDelete] // Changed to HttpDelete for RESTful standards
+        [Route("DeleteUser/{uid}")]
         public IActionResult DeleteUser(int uid)
         {
             try
             {
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
+                {
+                    _con.Open();
+                    NpgsqlCommand command = _con.CreateCommand();
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "delete from CL_Users where uid = @uid";
+                    command.Parameters.AddWithValue("@uid", uid);
+                    int rowsAffected = command.ExecuteNonQuery();
 
-                SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-                _con.Open();
-                SqlCommand command = _con.CreateCommand();
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "delete from CL_Users where uid = @userId ";
-                command.Parameters.AddWithValue("@uid", uid);
-                command.ExecuteNonQuery();
-
-                // Read returned UserId
-                _con.Close();
-                return Ok(new { Message = "User delete successfully"});
+                    if (rowsAffected > 0)
+                    {
+                        return Ok(new { Message = "User deleted successfully" });
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "User not found" });
+                    }
+                }
             }
             catch (Exception e)
             {
                 return BadRequest(new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
@@ -503,42 +517,48 @@ namespace CricLive.Controllers
         {
             try
             {
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
+                {
+                    _con.Open();
+                    NpgsqlCommand command = _con.CreateCommand();
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = @"UPDATE CL_Users SET
+                                                fullName = @fullName,
+                                                gender = @gender,
+                                                email = @email,
+                                                isVerified = @isVerified,
+                                                profilePhoto = @profilePhoto,
+                                                role = @role,
+                                                username = @username
+                                            WHERE uid = @uid";
 
-                SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive"));
-                _con.Open();
-                SqlCommand command = _con.CreateCommand();
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = @"Update CL_Users 
-	                                    set fullName =  @firstName + ' ' + @lastName,
-		                                    gender = @gender,
-		                                    email = @email,
-		                                    isVerified = @isVerified,
-		                                    profilePhoto= @profilePhoto,
-		                                    role = @role,
-		                                    username =  @username,
-		                                    password = @password
-	                                    where uid = @userId";
-                command.Parameters.AddWithValue("@userId", user.Uid);
-                command.Parameters.AddWithValue("@firstName", user.FirstName);
-                command.Parameters.AddWithValue("@lastName", user.LastName);
-                command.Parameters.AddWithValue("@username", user.Username);
-                command.Parameters.AddWithValue("@email", user.Email);
-                command.Parameters.AddWithValue("@profilePhoto", user.ProfilePhoto ?? " ");
-                command.Parameters.AddWithValue("@gender", user.Gender);
-                command.Parameters.AddWithValue("@isVerified", user.IsVerified);
-                command.Parameters.AddWithValue("@role", user.Role);
-                command.Parameters.AddWithValue("@password", user.Password);
-                command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@uid", user.Uid);
+                    command.Parameters.AddWithValue("@fullName", $"{user.FirstName} {user.LastName}");
+                    command.Parameters.AddWithValue("@username", user.Username);
+                    command.Parameters.AddWithValue("@email", user.Email);
+                    command.Parameters.AddWithValue("@profilePhoto", user.ProfilePhoto ?? " ");
+                    command.Parameters.AddWithValue("@gender", user.Gender);
+                    command.Parameters.AddWithValue("@isVerified", user.IsVerified);
+                    command.Parameters.AddWithValue("@role", user.Role);
 
-                _con.Close();
-                return Ok(new { Message = "User update successfully" });
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return Ok(new { Message = "User updated successfully" });
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "User not found" });
+                    }
+                }
             }
             catch (Exception e)
             {
                 return BadRequest(new
                 {
                     Message = e.Message,
-                    innerException = e.InnerException
+                    innerException = e.InnerException?.Message
                 });
             }
         }
@@ -550,22 +570,22 @@ namespace CricLive.Controllers
             try
             {
                 List<User> users = new List<User>();
-                using (SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive")))
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
                     _con.Open();
-                    SqlCommand command = _con.CreateCommand();
+                    NpgsqlCommand command = _con.CreateCommand();
                     command.CommandType = System.Data.CommandType.Text;
                     command.CommandText = "select * from CL_Users";
 
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             User user = new User
                             {
                                 Uid = Convert.ToInt32(reader["uid"]),
-                                FirstName = reader["fullName"].ToString().Split()[0], 
-                                LastName = reader["fullName"].ToString().Split().Length == 1 ? " " : reader["fullName"].ToString().Split()[1],
+                                FirstName = reader["fullName"].ToString().Split(' ')[0],
+                                LastName = reader["fullName"].ToString().Split(' ').Length > 1 ? reader["fullName"].ToString().Split(' ')[1] : "",
                                 Username = reader["username"].ToString(),
                                 Email = reader["email"].ToString(),
                                 ProfilePhoto = reader["profilePhoto"].ToString(),
@@ -579,10 +599,9 @@ namespace CricLive.Controllers
                     }
                 }
                 return Ok(users);
-            } 
+            }
             catch (Exception e)
             {
-                // Log the exception details for debugging purposes
                 Console.WriteLine($"An error occurred in GetAllUsers: {e.Message}");
                 return StatusCode(500, new
                 {
@@ -591,34 +610,37 @@ namespace CricLive.Controllers
                 });
             }
         }
+
         [HttpGet]
         [Route("SearchUser/{q}")]
-        public IActionResult SearchUser( string q)
+        public IActionResult SearchUser(string q)
         {
             if (string.IsNullOrWhiteSpace(q))
             {
-                return Ok(new List<User>()); 
+                return Ok(new List<User>());
             }
 
             try
             {
                 List<User> users = new List<User>();
-                using (SqlConnection _con = new SqlConnection(_configuration.GetConnectionString("CricLive")))
+                using (NpgsqlConnection _con = new NpgsqlConnection(_configuration.GetConnectionString("CricLive")))
                 {
                     _con.Open();
-                    SqlCommand command = _con.CreateCommand();
+                    NpgsqlCommand command = _con.CreateCommand();
                     command.CommandType = System.Data.CommandType.Text;
 
+                    // In PostgreSQL, LIKE is case-sensitive. ILIKE is case-insensitive.
+                    // Using ILIKE is generally better for user search.
                     command.CommandText = @"
                         SELECT uid, fullName, username, email, gender
                         FROM CL_Users
-                        WHERE fullName LIKE @searchTerm
-                           OR username LIKE @searchTerm
-                           OR email LIKE @searchTerm";
+                        WHERE fullName ILIKE @searchTerm
+                           OR username ILIKE @searchTerm
+                           OR email ILIKE @searchTerm";
 
                     command.Parameters.AddWithValue("@searchTerm", $"%{q}%");
 
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -626,10 +648,7 @@ namespace CricLive.Controllers
                             {
                                 Uid = Convert.ToInt32(reader["uid"]),
                                 FirstName = reader["fullName"].ToString().Split(' ')[0],
-                                // Safely handle names with only one part
-                                LastName = reader["fullName"].ToString().Split(' ').Length > 1
-                                           ? reader["fullName"].ToString().Split(' ')[1]
-                                           : "",
+                                LastName = reader["fullName"].ToString().Split(' ').Length > 1 ? reader["fullName"].ToString().Split(' ')[1] : "",
                                 Username = reader["username"].ToString(),
                                 Email = reader["email"].ToString(),
                                 Gender = reader["gender"].ToString(),
@@ -640,13 +659,12 @@ namespace CricLive.Controllers
                 }
                 return Ok(new
                 {
-                    Message = "Success to seach user",
+                    Message = "Success in searching for user",
                     Users = users
                 });
             }
             catch (Exception e)
             {
-                // Log the exception details for debugging
                 Console.WriteLine($"An error occurred in SearchUser: {e.Message}");
                 return StatusCode(500, new
                 {
@@ -655,9 +673,5 @@ namespace CricLive.Controllers
                 });
             }
         }
-
-
-
-
     }
 }

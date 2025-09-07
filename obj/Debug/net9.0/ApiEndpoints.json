@@ -447,22 +447,6 @@
     "ContainingType": "CricLive.Controllers.CL_UsersController",
     "Method": "CreateUser",
     "RelativePath": "api/CL_Users/CreateUser",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "user",
-        "Type": "CricLive.Models.User",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CricLive.Controllers.CL_UsersController",
-    "Method": "CreateUser",
-    "RelativePath": "api/CL_Users/CreateUser",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -478,15 +462,15 @@
   {
     "ContainingType": "CricLive.Controllers.CL_UsersController",
     "Method": "DeleteUser",
-    "RelativePath": "api/CL_Users/DeleteUser",
-    "HttpMethod": "GET",
+    "RelativePath": "api/CL_Users/DeleteUser/{uid}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "uid",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -520,7 +504,7 @@
   {
     "ContainingType": "CricLive.Controllers.CL_UsersController",
     "Method": "GetUser",
-    "RelativePath": "api/CL_Users/GetUser",
+    "RelativePath": "api/CL_Users/GetUser/{uid}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -528,7 +512,7 @@
       {
         "Name": "uid",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
