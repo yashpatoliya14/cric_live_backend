@@ -15,7 +15,7 @@ public class CL_MatchesController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpGet]
+    [HttpGet] 
     [Route("GetLiveMatch")]
     public IActionResult GetLiveMatches()
     {
@@ -47,7 +47,6 @@ public class CL_MatchesController : ControllerBase
                                 TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
                                 Uid = Convert.ToInt32(reader["uid"]),
                                 MatchState = reader["matchState"]?.ToString(),
-                                CurrentOvers = Convert.ToDecimal(reader["currentOvers"]),
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
@@ -104,7 +103,6 @@ public class CL_MatchesController : ControllerBase
                                 TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
                                 Uid = Convert.ToInt32(reader["uid"]),
                                 MatchState = reader["matchState"] != DBNull.Value ? reader["matchState"]?.ToString() : null,
-                                CurrentOvers = Convert.ToDecimal(reader["currentOvers"]),
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
@@ -132,9 +130,34 @@ public class CL_MatchesController : ControllerBase
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("CL_CreateMatch", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(@"INSERT INTO CL_Matches
+           (inningNo
+           ,team1
+           ,team2
+           ,matchDate
+           ,overs
+           ,status
+           ,tournamentId
+           ,wideRun
+           ,noBallRun
+           ,uid
+           ,matchState)
+     VALUES
+           (@inningNo,
+            @team1,
+            @team2,
+            @matchDate,
+            @overs,
+            @status,
+            @tournamentId,
+            @wideRun,
+            @noBallRun,
+            @uid,
+            @matchState) RETURNING id;", conn))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@inningNo", 1);
+                    command.Parameters.AddWithValue("@status", "scheduled");
                     command.Parameters.AddWithValue("@team1", matchDto.Team1);
                     command.Parameters.AddWithValue("@team2", matchDto.Team2);
                     command.Parameters.AddWithValue("@matchDate", matchDto.MatchDate);
@@ -179,12 +202,25 @@ public class CL_MatchesController : ControllerBase
                     {
                         if (reader.Read())
                         {
-                            var match = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            Match match = new Match
                             {
-                                var value = reader.GetValue(i);
-                                match.Add(reader.GetName(i), value == DBNull.Value ? null : value);
-                            }
+                                Id = Convert.ToInt32(reader["id"]),
+                                InningNo = Convert.ToInt32(reader["inningNo"]),
+                                Team1 = Convert.ToInt32(reader["team1"]),
+                                Team2 = Convert.ToInt32(reader["team2"]),
+                                MatchDate = Convert.ToDateTime(reader["matchDate"]),
+                                Overs = Convert.ToInt32(reader["overs"]),
+                                Status = reader["status"].ToString(),
+                                TossWon = reader["tossWon"] != DBNull.Value ? Convert.ToInt32(reader["tossWon"]) : null,
+                                Decision = reader["decision"].ToString(),
+                                TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
+                                Uid = Convert.ToInt32(reader["uid"]),
+                                MatchState = reader["matchState"] != DBNull.Value ? reader["matchState"]?.ToString() : null,
+                                StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
+                                NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
+                                BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                            };
                             return Ok(new { Message = "Success to fetch", Match = match });
                         }
                         else
@@ -272,65 +308,6 @@ public class CL_MatchesController : ControllerBase
         }
     }
 
-    [HttpPut]
-    [Route("UpdateMatchState")]
-    public IActionResult UpdateMatchState([FromBody] UpdateMatchStateDto stateDto)
-    {
-        try
-        {
-            string pgDataSource = _configuration.GetConnectionString("CricLive");
-            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
-            {
-                conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("CL_UpdateMatchState", conn))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@matchId", stateDto.MatchId);
-                    command.Parameters.AddWithValue("@matchState", stateDto.MatchState);
-                    command.ExecuteNonQuery();
-                    return Ok(new { Message = "Updated" });
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, new { Message = e.ToString() });
-        }
-    }
-
-    [HttpGet]
-    [Route("GetMatchState")]
-    public IActionResult GetMatchState(int matchId)
-    {
-        try
-        {
-            string pgDataSource = _configuration.GetConnectionString("CricLive");
-            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
-            {
-                conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("CL_GetMatchState", conn))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@matchId", matchId);
-                    var matchState = command.ExecuteScalar();
-
-                    if (matchState == null || matchState == DBNull.Value)
-                    {
-                        return NotFound(new { Message = "Match state not found." });
-                    }
-                    return Ok(new
-                    {
-                        Message = "Data Get Successful",
-                        Data = matchState.ToString()
-                    });
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, new { Message = "Server error while fetching match state.", Error = e.Message });
-        }
-    }
 
     [HttpDelete]
     [Route("DeleteMatch")]
@@ -342,7 +319,7 @@ public class CL_MatchesController : ControllerBase
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("CL_DeleteMatch", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand("delete from CL_Matches where id = @id", conn))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@id", id);
@@ -368,9 +345,21 @@ public class CL_MatchesController : ControllerBase
             {
                 conn.Open();
                 List<Match> matches = new List<Match>();
-                using (NpgsqlCommand command = new NpgsqlCommand("CL_GetMatchesByTournamentId", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT
+	*,
+    home_team.teamName AS team1Name,  
+    away_team.teamName AS team2Name 
+   
+FROM
+    CL_Matches AS m
+INNER JOIN
+    CL_Teams AS home_team ON m.team1 = home_team.teamId 
+INNER JOIN
+    CL_Teams AS away_team ON m.team2 = away_team.teamId 
+WHERE
+    m.tournamentId = @tournamentId;", conn))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@tournamentId", id);
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
@@ -394,7 +383,6 @@ public class CL_MatchesController : ControllerBase
                                 TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
                                 WideRun = reader["wideRun"] != DBNull.Value ? Convert.ToInt32(reader["wideRun"]) : 0,
                                 NoBallRun = reader["noBallRun"] != DBNull.Value ? Convert.ToInt32(reader["noBallRun"]) : 0,
-                                CurrentOvers = reader["currentOvers"] != DBNull.Value ? Convert.ToDecimal(reader["currentOvers"]) : 0,
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : (int?)null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : (int?)null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : (int?)null,

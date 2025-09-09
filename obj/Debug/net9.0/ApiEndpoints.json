@@ -91,22 +91,6 @@
   },
   {
     "ContainingType": "CL_MatchesController",
-    "Method": "GetMatchState",
-    "RelativePath": "api/CL_Matches/GetMatchState",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "matchId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CL_MatchesController",
     "Method": "UpdateMatch",
     "RelativePath": "api/CL_Matches/UpdateMatch/{matchId}",
     "HttpMethod": "PUT",
@@ -121,22 +105,6 @@
       {
         "Name": "matchDto",
         "Type": "CricLive.Models.UpdateMatchDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CL_MatchesController",
-    "Method": "UpdateMatchState",
-    "RelativePath": "api/CL_Matches/UpdateMatchState",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "stateDto",
-        "Type": "CricLive.Models.UpdateMatchStateDto",
         "IsRequired": true
       }
     ],
