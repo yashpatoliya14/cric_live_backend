@@ -321,7 +321,7 @@ public class CL_MatchesController : ControllerBase
                 conn.Open();
                 using (NpgsqlCommand command = new NpgsqlCommand("delete from CL_Matches where id = @id", conn))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
                     command.ExecuteNonQuery();
                     return Ok("Match deleted successfully.");
