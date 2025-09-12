@@ -313,6 +313,20 @@ namespace CricLive.Controllers
                         deleteScorersCmd.ExecuteNonQuery();
                     }
 
+                    string deleteMatchesQuery = "DELETE FROM CL_Matches WHERE tournamentId = @tournamentId;";
+                    using (NpgsqlCommand deleteMatchesCmd = new NpgsqlCommand(deleteMatchesQuery, conn, transaction))
+                    {
+                        deleteMatchesCmd.Parameters.AddWithValue("@tournamentId", id);
+                        deleteMatchesCmd.ExecuteNonQuery();
+                    }
+
+                    string deleteTeamsQuery = "DELETE FROM CL_TournamentTeams WHERE tournamentId = @tournamentId;";
+                    using (NpgsqlCommand deleteTeamsCmd = new NpgsqlCommand(deleteTeamsQuery, conn, transaction))
+                    {
+                        deleteTeamsCmd.Parameters.AddWithValue("@tournamentId", id);
+                        deleteTeamsCmd.ExecuteNonQuery();
+                    }
+
                     // Step 2: Delete the tournament itself
                     string deleteTournamentQuery = "DELETE FROM CL_Tournaments WHERE tournamentId = @tournamentId;";
                     int rowsAffected;

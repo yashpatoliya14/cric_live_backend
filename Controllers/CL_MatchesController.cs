@@ -310,7 +310,7 @@ public class CL_MatchesController : ControllerBase
 
 
     [HttpDelete]
-    [Route("DeleteMatch")]
+    [Route("DeleteMatch/{id}")]
     public IActionResult DeleteMatch(int id)
     {
         try
