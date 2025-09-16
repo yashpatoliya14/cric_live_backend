@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CricLive")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2bfb4451bb92f593e0103753306224262313cb44")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2ff1693af3be0ed85efcf9c33f637d2ad3ac627")]
 [assembly: System.Reflection.AssemblyProductAttribute("CricLive")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CricLive")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

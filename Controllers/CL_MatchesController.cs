@@ -17,8 +17,8 @@ public class CL_MatchesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetLiveMatch")]
-    public IActionResult GetLiveMatches()
+    [Route("GetLiveMatch/{from}/{limit}")]
+    public IActionResult GetLiveMatches(int from,int limit)
     {
         try
         {
@@ -28,14 +28,19 @@ public class CL_MatchesController : ControllerBase
             {
                 conn.Open();
                 using (NpgsqlCommand command = new NpgsqlCommand(@"
-                                SELECT *,t1.teamName as team1Name,t2.teamName as team2Name FROM CL_Matches as m
+                                SELECT *,t1.teamName as team1Name,t2.teamName as team2Name 
+                                FROM CL_Matches as m
                                 inner join CL_Teams as t1
                                 on t1.teamId = m.team1
                                 inner join CL_Teams as t2
                                 on t2.teamId = m.team2
-                                 WHERE status = 'live'", conn))
+                                WHERE status = 'live' 
+                                ORDER BY m.matchDate DESC
+                                LIMIT @pageSize OFFSET @offset", conn))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@pageSize", limit); 
+                    command.Parameters.AddWithValue("@offset", from);
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -210,7 +215,12 @@ public class CL_MatchesController : ControllerBase
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                string query = "SELECT * FROM CL_Matches WHERE id = @matchId";
+                string query = @"SELECT *,t1.teamName as team1Name,t2.teamName as team2Name FROM CL_Matches as m
+inner join CL_Teams as t1
+                                on t1.teamId = m.team1
+                                inner join CL_Teams as t2
+                                on t2.teamId = m.team2
+WHERE id = @matchId";
                 using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                 {
                     command.Parameters.AddWithValue("@matchId", matchId);
@@ -235,7 +245,10 @@ public class CL_MatchesController : ControllerBase
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
-                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null,
+                                Team1Name = reader["team1Name"].ToString(),
+                                Team2Name = reader["team2Name"].ToString(),
+
                             };
                             return Ok(new { Message = "Success to fetch", Match = match });
                         }
@@ -435,7 +448,12 @@ WHERE
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT * from CL_Matches where CAST(id AS TEXT) ILIKE @text", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT *,t1.teamName as team1Name , t2.teamName as team2Name from CL_Matches as m
+inner join CL_Teams as t1
+                                on t1.teamId = m.team1
+                                inner join CL_Teams as t2
+                                on t2.teamId = m.team2
+where CAST(id AS TEXT) ILIKE @text", conn))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@text", $"%{text}%");
@@ -460,7 +478,9 @@ WHERE
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
-                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null,
+                                Team1Name = reader["team1Name"].ToString(),
+                                Team2Name = reader["team2Name"].ToString(),
                             };
                                 result.Add(match);
                         }

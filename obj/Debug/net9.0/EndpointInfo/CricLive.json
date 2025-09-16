@@ -5,10 +5,30 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/CL_Matches/GetLiveMatch": {
+    "/api/CL_Matches/GetLiveMatch/{from}/{limit}": {
       "get": {
         "tags": [
           "CL_Matches"
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {

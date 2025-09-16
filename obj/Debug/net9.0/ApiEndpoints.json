@@ -34,11 +34,22 @@
   {
     "ContainingType": "CL_MatchesController",
     "Method": "GetLiveMatches",
-    "RelativePath": "api/CL_Matches/GetLiveMatch",
+    "RelativePath": "api/CL_Matches/GetLiveMatch/{from}/{limit}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
