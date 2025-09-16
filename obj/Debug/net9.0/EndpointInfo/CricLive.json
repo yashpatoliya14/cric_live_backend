@@ -136,7 +136,7 @@
         }
       }
     },
-    "/api/CL_Matches/DeleteMatch": {
+    "/api/CL_Matches/DeleteMatch/{id}": {
       "delete": {
         "tags": [
           "CL_Matches"
@@ -144,7 +144,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -171,6 +172,28 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CL_Matches/Search/{text}": {
+      "get": {
+        "tags": [
+          "CL_Matches"
+        ],
+        "parameters": [
+          {
+            "name": "text",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],

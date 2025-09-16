@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Npgsql; // Changed from System.Data.SqlClient
 using System.Data;
+using System.Dynamic;
 using System.Text;
 
 [ApiController]
@@ -15,7 +16,7 @@ public class CL_MatchesController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpGet] 
+    [HttpGet]
     [Route("GetLiveMatch")]
     public IActionResult GetLiveMatches()
     {
@@ -404,6 +405,108 @@ WHERE
             {
                 Message = e.Message
             });
+        }
+    }
+
+
+    [HttpGet]
+    [Route("Search/{text}")]
+    public IActionResult Search(string text)
+    {
+        try
+        {
+            string pgDataSource = _configuration.GetConnectionString("CricLive");
+            List<dynamic> result = new List<dynamic>();
+            using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT * from CL_Matches where CAST(id AS TEXT) ILIKE @text", conn))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@text", $"%{text}%");
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var match = new Match
+                            {
+                                Id = Convert.ToInt32(reader["id"]),
+                                InningNo = Convert.ToInt32(reader["inningNo"]),
+                                Team1 = Convert.ToInt32(reader["team1"]),
+                                Team2 = Convert.ToInt32(reader["team2"]),
+                                MatchDate = Convert.ToDateTime(reader["matchDate"]),
+                                Overs = Convert.ToInt32(reader["overs"]),
+                                Status = reader["status"].ToString(),
+                                TossWon = reader["tossWon"] != DBNull.Value ? Convert.ToInt32(reader["tossWon"]) : null,
+                                Decision = reader["decision"].ToString(),
+                                TournamentId = reader["tournamentId"] != DBNull.Value ? Convert.ToInt32(reader["tournamentId"]) : null,
+                                Uid = Convert.ToInt32(reader["uid"]),
+                                MatchState = reader["matchState"]?.ToString(),
+                                StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
+                                NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
+                                BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                            };
+                                result.Add(match);
+                        }
+                    }
+                }
+
+                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT 
+                            t.tournamentId, t.name, t.location, t.startDate, 
+                            t.endDate, t.format, t.hostId, t.createdAt,
+                            u.uid as scorerId, u.username
+                        FROM 
+                            CL_Tournaments as t
+                        LEFT JOIN 
+                            CL_TournamentScorers as ts ON t.tournamentId = ts.tournamentId
+                        LEFT JOIN 
+                            CL_Users as u ON ts.uid = u.uid
+                        where (t.name like @text) or (t.location like @text)
+                        ORDER BY
+                            t.tournamentId", conn))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@text", $"%{text}%");
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int tournamentId = Convert.ToInt32(reader["tournamentId"]);
+                            
+                                var tournament = new Tournament
+                                {
+                                    TournamentId = tournamentId,
+                                    Name = reader["name"].ToString(),
+                                    Location = reader["location"].ToString(),
+                                    StartDate = Convert.ToDateTime(reader["startDate"]),
+                                    EndDate = Convert.ToDateTime(reader["endDate"]),
+                                    Format = reader["format"].ToString(),
+                                    HostId = Convert.ToInt32(reader["hostId"]),
+                                    CreatedAt = Convert.ToDateTime(reader["createdAt"]),
+                                    Scorers = new List<Scorer>()
+                                };
+                                result.Add(tournament);
+                            
+
+                            if (reader.GetValue("scorerId")!=null && reader["scorerId"] != DBNull.Value)
+                            {
+                                tournament.Scorers.Add(new Scorer
+                                {
+                                    ScorerId = Convert.ToInt32(reader["scorerId"]),
+                                    Username = reader["username"].ToString()
+                                });
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Ok(new { Message= "Success to fetch",Result = result });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, new { Message = e.Message });
         }
     }
 }

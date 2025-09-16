@@ -18,7 +18,7 @@
   {
     "ContainingType": "CL_MatchesController",
     "Method": "DeleteMatch",
-    "RelativePath": "api/CL_Matches/DeleteMatch",
+    "RelativePath": "api/CL_Matches/DeleteMatch/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -26,7 +26,7 @@
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -84,6 +84,22 @@
       {
         "Name": "uid",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CL_MatchesController",
+    "Method": "Search",
+    "RelativePath": "api/CL_Matches/Search/{text}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "text",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],

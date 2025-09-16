@@ -72,7 +72,7 @@
               "RelativeDocumentMoniker": "Controllers\\CL_MatchesController.cs",
               "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_MatchesController.cs",
               "RelativeToolTip": "Controllers\\CL_MatchesController.cs",
-              "ViewState": "AgIAALwAAAAAAAAAAAAkwEUBAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAO0BAAAAAAAAAAAAAPgBAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-07T16:55:15.192Z",
               "EditorCaption": ""
@@ -109,10 +109,9 @@
               "RelativeDocumentMoniker": "Controllers\\CL_TournamentsController.cs",
               "ToolTip": "D:\\SEM 5\\cric_live_backend\\CricLive\\Controllers\\CL_TournamentsController.cs",
               "RelativeToolTip": "Controllers\\CL_TournamentsController.cs",
-              "ViewState": "AgIAACoBAAAAAAAAAAAYwEYBAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAQwCQAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T16:52:22.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-07T16:52:22.979Z"
             },
             {
               "$type": "Document",
@@ -124,8 +123,7 @@
               "RelativeToolTip": "Controllers\\CL_TournamentTeamController.cs",
               "ViewState": "AgIAAFEAAAAAAAAAAAA1wGAAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T16:51:55.189Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-07T16:51:55.189Z"
             }
           ]
         }
