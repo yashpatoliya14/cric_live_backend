@@ -27,7 +27,13 @@ public class CL_MatchesController : ControllerBase
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM CL_Matches WHERE status = 'live'", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(@"
+                                SELECT *,t1.teamName as team1Name,t2.teamName as team2Name FROM CL_Matches as m
+                                inner join CL_Teams as t1
+                                on t1.teamId = m.team1
+                                inner join CL_Teams as t2
+                                on t2.teamId = m.team2
+                                 WHERE status = 'live'", conn))
                 {
                     command.CommandType = CommandType.Text;
                     using (NpgsqlDataReader reader = command.ExecuteReader())
@@ -51,7 +57,9 @@ public class CL_MatchesController : ControllerBase
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
-                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null,
+                                Team1Name = reader["team1Name"].ToString(),
+                                Team2Name = reader["team2Name"].ToString(),
                             };
                             matches.Add(match);
                         }
@@ -82,7 +90,12 @@ public class CL_MatchesController : ControllerBase
             using (NpgsqlConnection conn = new NpgsqlConnection(pgDataSource))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM CL_Matches WHERE uid = @uid AND tournamentId IS NULL", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(@"SELECT *,t1.teamName as team1Name,t2.teamName as team2Name FROM CL_Matches as m
+                                inner join CL_Teams as t1
+                                on t1.teamId = m.team1
+                                inner join CL_Teams as t2
+                                on t2.teamId = m.team2
+                                WHERE uid = @uid AND (tournamentId IS NULL)", conn))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@uid", uid);
@@ -107,7 +120,9 @@ public class CL_MatchesController : ControllerBase
                                 StrikerBatsmanId = reader["strikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["strikerBatsmanId"]) : null,
                                 NonStrikerBatsmanId = reader["nonStrikerBatsmanId"] != DBNull.Value ? Convert.ToInt32(reader["nonStrikerBatsmanId"]) : null,
                                 BowlerId = reader["bowlerId"] != DBNull.Value ? Convert.ToInt32(reader["bowlerId"]) : null,
-                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null
+                                CurrentBattingTeamId = reader["currentBattingTeamId"] != DBNull.Value ? Convert.ToInt32(reader["currentBattingTeamId"]) : null,
+                                Team1Name = reader["team1Name"].ToString(),
+                                Team2Name = reader["team2Name"].ToString(),
                             });
                         }
                     }
