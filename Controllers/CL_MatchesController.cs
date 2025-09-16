@@ -95,7 +95,7 @@ public class CL_MatchesController : ControllerBase
                                 on t1.teamId = m.team1
                                 inner join CL_Teams as t2
                                 on t2.teamId = m.team2
-                                WHERE uid = @uid AND (tournamentId IS NULL)", conn))
+                                WHERE m.uid = @uid AND (m.tournamentId IS NULL)", conn))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@uid", uid);
